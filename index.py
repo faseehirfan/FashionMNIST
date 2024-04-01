@@ -24,17 +24,26 @@ def normalize_data(image, label):
 dataset, metadata = tfds.load('fashion_mnist', as_supervised=True, with_info=True)
 training_set, testing_set = dataset['train'].map(normalize_data), dataset['test'].map(normalize_data)
 
+# Caching images to make training faster
+training_set, testing_set = training_set.cache(), testing_set.cache()
+
+label_names = ['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle Boot']
+
+num_train, num_test = metadata.splits['train'].num_examples, metadata.splits['test'].num_examples
+print(num_train, num_test)
+
 # Plot single image
 
-for image, label in testing_set.take(1):
-        break
+# for image, label in testing_set.take(1):
+#         break
 
-image = image.numpy().reshape((28, 28))
-plt.figure()
-plt.imshow(image, cmap=plt.cm.binary)
-plt.colorbar()
-plt.grid(False)
-plt.show()
+# image = image.numpy().reshape((28, 28))
+# plt.figure()
+# plt.imshow(image, cmap=plt.cm.binary)
+# plt.colorbar()
+# plt.grid(False)
+# plt.show()
 
 # Set up layers of the model
 model = tf.keras.Sequential([
@@ -62,3 +71,11 @@ BATCH_SIZE = 32
 # Shuffling and grouping data into batches 
 training_set = training_set.cache().repeat().shuffle(len(training_set)).batch(BATCH_SIZE)
 testing_set = testing_set.cache().batch(BATCH_SIZE)
+
+# Training the model over 10 epochs
+model.fit(training_set, epochs=10, steps_per_epoch=math.ceil(num_train/BATCH_SIZE))
+
+# Testing the model
+loss, accuracy = model.evaluate(testing_set, steps=math.ceil(num_test/BATCH_SIZE))
+
+print(f'Loss: {loss}, Accuracy: ${round(accuracy * 100, 2)}%')
