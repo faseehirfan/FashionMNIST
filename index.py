@@ -53,3 +53,12 @@ model = tf.keras.Sequential([
 
     tf.keras.layers.Dense(10, activation=tf.nn.softmax)
 ])
+
+# Compiling the model
+model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(), metrics=['accuracy'])
+
+BATCH_SIZE = 32
+
+# Shuffling and grouping data into batches 
+training_set = training_set.cache().repeat().shuffle(len(training_set)).batch(BATCH_SIZE)
+testing_set = testing_set.cache().batch(BATCH_SIZE)
