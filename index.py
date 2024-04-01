@@ -23,3 +23,15 @@ def normalize_data(image, label):
 # Loading Fashion MNIST dataset
 dataset, metadata = tfds.load('fashion_mnist', as_supervised=True, with_info=True)
 training_set, testing_set = dataset['train'].map(normalize_data), dataset['test'].map(normalize_data)
+
+# Plot single image
+
+for image, label in testing_set.take(1):
+        break
+
+image = image.numpy().reshape((28, 28))
+plt.figure()
+plt.imshow(image, cmap=plt.cm.binary)
+plt.colorbar()
+plt.grid(False)
+plt.show()
