@@ -69,7 +69,7 @@ model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentro
 BATCH_SIZE = 32
 
 # Shuffling and grouping data into batches 
-training_set = training_set.cache().repeat().shuffle(len(training_set)).batch(BATCH_SIZE)
+training_set = training_set.cache().repeat().shuffle(num_train).batch(BATCH_SIZE)
 testing_set = testing_set.cache().batch(BATCH_SIZE)
 
 # Training the model over 10 epochs
